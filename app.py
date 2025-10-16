@@ -1,3 +1,4 @@
+from flask import Flask, request, jsonify, render_template
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
@@ -6,7 +7,7 @@ patients = []
 
 @app.route('/')
 def home():
-    return "Patient Management System Running Successfully!"
+    return render_template('index.html')
 
 @app.route('/patients', methods=['GET'])
 def get_patients():
