@@ -1,21 +1,97 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Management System</title>
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #1565c0;
+            margin-bottom: 1rem;
+        }
+
+        input {
+            width: 90%;
+            padding: 0.5rem;
+            margin: 0.4rem 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 95%;
+            background-color: #1565c0;
+            color: white;
+            border: none;
+            padding: 0.7rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0d47a1;
+        }
+
+        h2 {
+            margin-top: 1.5rem;
+            color: #333;
+            border-top: 1px solid #ddd;
+            padding-top: 1rem;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+        }
+
+        li {
+            background-color: #f1f8e9;
+            margin: 0.4rem 0;
+            padding: 0.6rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
-    <h1>Patient Management System</h1>
-    <form id="patientForm">
-        <input type="text" id="name" placeholder="Name" required>
-        <input type="number" id="age" placeholder="Age" required>
-        <input type="text" id="condition" placeholder="Condition" required>
-        <button type="submit">Add Patient</button>
-    </form>
+    <div class="container">
+        <h1>Patient Management System</h1>
+        <form id="patientForm">
+            <input type="text" id="name" placeholder="Full Name" required>
+            <input type="number" id="age" placeholder="Age" required>
+            <input type="text" id="condition" placeholder="Condition" required>
+            <button type="submit">Add Patient</button>
+        </form>
 
-    <h2>Patient List</h2>
-    <ul id="patientList"></ul>
+        <h2>Registered Patients</h2>
+        <ul id="patientList"></ul>
+    </div>
 
     <script>
         const form = document.getElementById('patientForm');
@@ -24,7 +100,9 @@
         async function loadPatients() {
             const res = await fetch('/patients');
             const patients = await res.json();
-            list.innerHTML = patients.map(p => `<li>${p.name} (${p.age}) - ${p.condition}</li>`).join('');
+            list.innerHTML = patients.length
+                ? patients.map((p, i) => `<li><b>${i+1}.</b> ${p.name} (${p.age}) - ${p.condition}</li>`).join('')
+                : "<li>No patients added yet.</li>";
         }
 
         form.addEventListener('submit', async (e) => {
