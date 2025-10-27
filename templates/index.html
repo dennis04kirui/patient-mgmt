@@ -1,147 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Management System</title>
     <style>
         body {
-            font-family: "Segoe UI", sans-serif;
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            font-family: Arial;
+            background: #f4f4f4;
+            padding: 20px;
         }
-
-        .container {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 420px;
-            text-align: center;
+        table {
+            background: white;
+            border-collapse: collapse;
+            width: 100%;
         }
-
-        h1 {
-            color: #1565c0;
-            margin-bottom: 1rem;
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
         }
-
-        input {
-            width: 90%;
-            padding: 0.5rem;
-            margin: 0.4rem 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-
-        button {
-            background-color: #1565c0;
+        th {
+            background: #007BFF;
             color: white;
-            border: none;
-            padding: 0.6rem 1rem;
-            border-radius: 5px;
-            font-size: 0.95rem;
-            cursor: pointer;
-            margin-top: 0.4rem;
-            transition: background 0.3s ease;
         }
-
-        button:hover {
-            background-color: #0d47a1;
-        }
-
-        .delete-btn {
-            background-color: #e53935;
-            margin-left: 10px;
-            padding: 0.3rem 0.6rem;
-            font-size: 0.85rem;
-        }
-
-        .delete-btn:hover {
-            background-color: #b71c1c;
-        }
-
-        h2 {
-            margin-top: 1.5rem;
-            color: #333;
-            border-top: 1px solid #ddd;
-            padding-top: 1rem;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-            text-align: left;
-        }
-
-        li {
-            background-color: #f1f8e9;
-            margin: 0.4rem 0;
-            padding: 0.6rem;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        button, input {
+            padding: 8px;
+            margin: 4px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Patient Management System</h1>
-        <form id="patientForm">
-            <input type="text" id="name" placeholder="Full Name" required>
-            <input type="number" id="age" placeholder="Age" required>
-            <input type="text" id="condition" placeholder="Condition" required>
-            <button type="submit">Add Patient</button>
-        </form>
+    <h2>Patient Management System</h2>
 
-        <h2>Registered Patients</h2>
-        <ul id="patientList"></ul>
-    </div>
+    <form method="POST" action="/add">
+        <input type="text" name="name" placeholder="Full Name" required>
+        <input type="number" name="age" placeholder="Age" required>
+        <input type="text" name="condition" placeholder="Condition" required>
+        <button type="submit">Add Patient</button>
+    </form>
 
-    <script>
-        const form = document.getElementById('patientForm');
-        const list = document.getElementById('patientList');
-
-        async function loadPatients() {
-            const res = await fetch('/patients');
-            const patients = await res.json();
-            list.innerHTML = patients.length
-                ? patients.map((p) => `
-                    <li>
-                        <span><b>${p.name}</b> (${p.age}) - ${p.condition}</span>
-                        <button class="delete-btn" onclick="deletePatient(${p.id})">Delete</button>
-                    </li>
-                `).join('')
-                : "<li>No patients added yet.</li>";
-        }
-
-        async function deletePatient(id) {
-            await fetch('/patients/' + id, { method: 'DELETE' });
-            loadPatients();
-        }
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const age = document.getElementById('age').value;
-            const condition = document.getElementById('condition').value;
-            await fetch('/patients', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name, age, condition })
-            });
-            form.reset();
-            loadPatients();
-        });
-
-        loadPatients();
-    </script>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Age</th>
+            <th>Condition</th>
+            <th>Action</th>
+        </tr>
+        {% for p in patients %}
+        <tr>
+            <td>{{ p[0] }}</td>
+            <td>{{ p[1] }}</td>
+            <td>{{ p[2] }}</td>
+            <td>{{ p[3] }}</td>
+            <td>
+  <a href="/edit/{{ p[0] }}">Edit</a> |
+  <a href="/delete/{{ p[0] }}">Delete</a>
+</td>
+        </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>
